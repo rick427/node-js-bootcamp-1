@@ -36,7 +36,7 @@ const replaceTemplate = (temp, product) => {
   output = output.replace(/{%IMAGE%}/g, product.image);
   output = output.replace(/{%PRICE%}/g, product.price);
   output = output.replace(/{%COUNTRY%}/g, product.from);
-  output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
+  output = output.replace(/{%NUTRIENT%}/g, product.nutrients);
   output = output.replace(/{%QUANTITY%}/g, product.quantity);
   output = output.replace(/{%DESCRIPTION%}/g, product.description);
   output = output.replace(/{%ID%}/g, product.id);
@@ -55,7 +55,8 @@ const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObj = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
-    const pathName = req.url
+ 
+    const {query, pathname: pathName} = url.parse(req.url, true);
 
     //Overview page
     if(pathName === '/' || pathName === '/overview'){
@@ -69,7 +70,10 @@ const server = http.createServer((req, res) => {
 
     //Product page
     else if(pathName === '/product'){
-        res.end('This is the product')
+        res.writeHead(200, {'Content-type': 'text/html'});
+        const product = dataObj[query.id]
+        const output = replaceTemplate(tempProduct, product);
+        res.end(output);
     }
 
     //Api page
