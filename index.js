@@ -1,7 +1,8 @@
 const fs = require('fs');
 const http = require('http');
+const url = require('url');
 
-/******FILES SYSTEMS*********/
+/***************************FILES SYSTEMS*****************************/
 /*Blocking Synchronous Way*/
 // const textIn = fs.readFileSync('./txt/input.txt', 'utf-8');
 // console.log(textIn);
@@ -28,10 +29,22 @@ const http = require('http');
 // console.log('This will read file first');
 
 
-/**************SERVER***************/
+/*****************************SERVER**************************************/
 const server = http.createServer((req, res) => {
-    res.end('server is up, Hello!!');
-    console.log(req);
+    const pathName = req.url
+    if(pathName === '/' || pathName === '/overview'){
+        res.end('This is the overview');
+    }
+    else if(pathName === '/product'){
+        res.end('This is the product')
+    }
+    else{
+        res.writeHead(404, {
+            'Content-type': 'text/html',
+            'my-own-header': 'hello-world'
+        });
+        res.end('<p>Page Not Found!!</p>')
+    }
 });
 const port = 5000;
 server.listen(port, '127.0.0.1', () => {
